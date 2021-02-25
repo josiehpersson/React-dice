@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios';
 import Inputfield from './Components/Inputfield';
 import UserList from './Components/UserList';
+import { ObjectId } from 'mongodb';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
@@ -29,8 +30,8 @@ function App() {
     axios
     .get(`${baseURL}/${id}`)
     .then((res) => {
-      setUser(res.data);
-      console.log(user);
+      setUser(res.data._id);
+      //console.log(user);
     })
     .catch((err) => {
       console.log(err);
@@ -60,12 +61,15 @@ function App() {
   };
 
   const deleteUser = (e) => {
-    const _id = e.target.id;
-    console.log(_id);
-    //const deleteThisUser = getUser(`?_id=${_id}`);
-
+    const userId = e.target.id;
+    //const _id = e.target.id;
+    //console.log(_id);
+    getUser(`?_id=${userId}`);
+    console.log(user);
+    const _id = user[0]._id;
+    console.log(user._id);
     axios
-    .delete(`${baseURL}/:id`, {params : {_id}})
+    .delete(`${baseURL}/${_id}`)
     //.delete(`${baseURL}/:id`)
     .then((res) => {
       console.log(res);
@@ -73,7 +77,7 @@ function App() {
     .catch((err) => {
       console.log(err);
     })
-    console.log(`${baseURL}/:id`, {params : _id})
+    //console.log(`${baseURL}/:id`, {params : _id})
   };
   return (
     <div className="App">
