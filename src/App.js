@@ -1,88 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import './App.css';
-import axios from 'axios';
+//import axios from 'axios';
 import Inputfield from './Components/Inputfield';
 import UserList from './Components/UserList';
-import { ObjectId } from 'mongodb';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
   const [users, setUsers] = useState([]);
-  const [user, setUser] = useState({});
+  //const [user, setUser] = useState();
   const baseURL = `http://localhost:8080/users`;
+  const axios = require('axios');
 
   useEffect(() => {
     getUsers();
   }, []);
-
-  const getUsers = () => {
-    axios
-      .get(baseURL)
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getUser = (id) => {
-    axios
-    .get(`${baseURL}/${id}`)
-    .then((res) => {
-      setUser(res.data._id);
-      //console.log(user);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  
+  async function getUsers() {
+    let res = await axios.get(baseURL);
+    setUsers(res.data);
+    //console.log(users);
   }
 
   const getInput = (formValue) => {
     setInputValue(formValue);
   };
 
-  const sendInput = () => {
+  async function postInput() {
     const newUser = {
       name: inputValue.toString(),
     };
 
-
-    axios
-      .post(baseURL, newUser)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
+    let res = await axios.post(baseURL, newUser);
+    let data = res.data;
+    console.log(data);
     getUsers();
-  };
+  }
 
-  const deleteUser = (e) => {
-    const userId = e.target.id;
-    //const _id = e.target.id;
-    //console.log(_id);
-    getUser(`?_id=${userId}`);
-    console.log(user);
-    const _id = user[0]._id;
-    console.log(user._id);
-    axios
-    .delete(`${baseURL}/${_id}`)
-    //.delete(`${baseURL}/:id`)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    //console.log(`${baseURL}/:id`, {params : _id})
-  };
+async function deleteUser(e) {
+  const id = e.target.id;
+  //console.log(id);
+  let res = await axios.get(`${baseURL}/?_id=${id}`);
+  console.log(res.data);
+  let data = res.data[0]._id;
+  //console.log(data);
+  const deleteThisUser = await axios.delete(`${baseURL}/${id}`);
+  getUsers();
+}
+
+
   return (
     <div className="App">
       <Inputfield updateParent={getInput} />
-      <button type="button" onClick={sendInput}>
+      <button type="button" onClick={postInput}>
         SEND
       </button>
       <UserList users={users} onClick={deleteUser}/>
