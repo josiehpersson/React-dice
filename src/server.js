@@ -17,7 +17,10 @@ mongoose.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.Promise = Promise;
 
 const User = mongoose.model('User', {
-    name: {
+    firstname: {
+        type: String,
+    },
+    lastname: {
         type: String,
     },
 });
@@ -39,7 +42,7 @@ app.get('/users', async (req,res) => {
 });
 
 app.get('users/:name', async (req, res) => {
-    User.findOne({name: req.params.name})
+    User.findOne({firstname: req.params.fname})
     .then((data) => {
         res.json(data);
         console.log(data);
@@ -54,7 +57,7 @@ app.get('users/:name', async (req, res) => {
 //POST
 app.post('/users', async (req, res) => {
     try {
-        const newUser = new User({ name: req.body.name }); 
+        const newUser = new User({ firstname: req.body.firstname, lastname: req.body.lastname }); 
         await newUser.save();
         res.status(200).json(newUser);
       } catch(err) {
@@ -66,7 +69,7 @@ app.post('/users', async (req, res) => {
     //PUT
     app.put('/users:id', async(req,res) => {
         try {
-            await User.updateOne({_id: req.params.id}, {name: req.body.name});
+            await User.updateOne({_id: req.params.id}, {firstname: req.body.firstname, lastname: req.body.lastname});
             res.status(200).json({success: true});
         } catch(err) {
             res.status(400).json({success: false, err});

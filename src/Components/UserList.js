@@ -1,12 +1,11 @@
 import React from 'react';
-import User from './User';
 import '../App.css';
 
 export default function UserList(props) {
-    let usersHTML = props.users.map((users) => {
+    let usersHTML = props.users.map((user) => {
         return(
             <div className="user-container">
-            <User key={users._id} id={users._id} name={users.name} onClick={props.onClick} />
+            <li key={user._id} id={user._id}>{user.firstName} {user.lastName} </li>
             </div>
         )
     });
