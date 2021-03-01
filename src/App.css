@@ -1,0 +1,11 @@
+.selected-user {
+    background-color: lightblue;
+}
+
+.user-list-item:hover {
+cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}

@@ -8,35 +8,28 @@ import axios from 'axios';
 function App() {
   const [inputValue, setInputValue] = useState('');
   const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState();
-  //const [user, setUser] = useState();
+  const [userId, setUserId] = useState('');
   const baseURL = `http://localhost:8080/users`;
-  //const axios = require('axios');
 
   useEffect(() => {
     getUsers();
-    //console.log(users);
   },[]);
 
-  async function getUsers() {
-    let finsUsers = await axios.get(baseURL)
+  const getUsers = async () => {
+    let findUsers = await axios.get(baseURL)
     .then((res) => {
-      console.log(res.data)
       setUsers(res.data);
     })
     .catch((error) => console.error(error));
-    //FUNKAR
   }
   
-  function postUser() {
+  const postUser = () => {
     const newUser = {
       firstname: inputValue.fname,
       lastname: inputValue.lname,
     };
-
     const {firstname} = newUser;
     const {lastname} = newUser; 
-    //console.log(newUser, firstname, lastname);
     axios.post(baseURL, {firstname: firstname, lastname: lastname})
     .then(res => console.log(res.data))
     .then(() => getUsers())
@@ -45,27 +38,57 @@ function App() {
     })
   }
 
-  function getUserId(e) {
+  const getUserId = (e) => {
     const id = e.target.id;
+    const liElement = e.target;
+    selectUser(liElement);
     axios.get(`${baseURL}/?_id=${id}`)
     .then(res=> setUserId(res.data[0]._id))
     .catch((error) => {
       console.log(error);
     })
-    console.log(userId);
   }
   
-  function editUser() {
-    console.log(`edit click ${userId}`)
-  } 
-   function deleteUser() {
-    axios.delete(`${baseURL}/${userId}`)
+  const editUser = () => {
+    const editedUser = {
+      firstname: inputValue.fname,
+      lastname: inputValue.lname,
+    }
+
+    axios.put(`${baseURL}/${userId}`, {_id: userId, firstname: editedUser.firstname, lastname: editedUser.lastname })
     .then(res => console.log(res.data))
     .then(() => getUsers())
+    .then(() => setUserId('0'))
     .catch((error) => {
       console.log(error);
     })
   } 
+  
+   const deleteUser = () => {
+    axios.delete(`${baseURL}/${userId}`)
+    .then(res => console.log(res.data))
+    .then(() => getUsers())
+    .then(() => setUserId('0') )
+    .catch((error) => {
+      console.log(error);
+    })
+  } 
+
+  const onSaveClick = () => {
+    if(userId === '0') {
+      postUser();
+    } else {
+      editUser();
+    }
+  }
+
+  const selectUser = (user) => {
+    if(user.classList.contains('selected-user')){
+      user.classList.remove('selected-user');
+    } else {
+      user.classList.add('selected-user')
+    }
+  }
   
     const getInput = (formValue) => {
       setInputValue(formValue);
@@ -85,7 +108,7 @@ function App() {
 
       <CreateUser />
       <div className="input-form">
-      <UserForm updateParent={getInput} onSave={postUser} />
+      <UserForm updateParent={getInput} onSave={onSaveClick} />
       </div>
 
     </div>

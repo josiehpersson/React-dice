@@ -41,7 +41,7 @@ app.get('/users', async (req,res) => {
     }
 });
 
-app.get('users/:name', async (req, res) => {
+app.get('/users/:name', async (req, res) => {
     User.findOne({firstname: req.params.fname})
     .then((data) => {
         res.json(data);
@@ -67,7 +67,7 @@ app.post('/users', async (req, res) => {
 
 
     //PUT
-    app.put('/users:id', async(req,res) => {
+    app.put('/users/:id', async(req,res) => {
         try {
             await User.updateOne({_id: req.params.id}, {firstname: req.body.firstname, lastname: req.body.lastname});
             res.status(200).json({success: true});

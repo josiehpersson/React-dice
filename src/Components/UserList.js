@@ -6,7 +6,7 @@ export default function UserList(props) {
   let usersHTML = users.map((user) => {
     return (
       <div className="user-container">
-        <li key={user._id} id={user._id} onClick={props.onSelect}>
+        <li key={user._id} id={user._id} onClick={props.onSelect} className="user-list-item">
           {user.firstname} {user.lastname}{' '}
         </li>
       </div>
