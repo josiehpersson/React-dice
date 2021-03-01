@@ -48,24 +48,24 @@ function App() {
   function getUserId(e) {
     const id = e.target.id;
     axios.get(`${baseURL}/?_id=${id}`)
-    .then(res=> setUserId(res.data._id))
+    .then(res=> setUserId(res.data[0]._id))
     .catch((error) => {
       console.log(error);
     })
     console.log(userId);
   }
   
-  function deleteUser(id) {
-    console.log(`removed user with id: ${userId}`)
-  }
-/*   function deleteUser(id) {
-    axios.delete(`${baseURL}/${id}`)
+  function editUser() {
+    console.log(`edit click ${userId}`)
+  } 
+   function deleteUser() {
+    axios.delete(`${baseURL}/${userId}`)
     .then(res => console.log(res.data))
     .then(() => getUsers())
     .catch((error) => {
       console.log(error);
     })
-  } */
+  } 
   
     const getInput = (formValue) => {
       setInputValue(formValue);
@@ -73,17 +73,14 @@ function App() {
 
   return (
     <div className="App">
-
-
       <div className="user-list">
       <UserList 
       users={users}
       onSelect={getUserId}
+      onEdit={editUser}
+      onDelete={deleteUser}
       />
-      <div className="userlist-btns">
-      <button type="button">EDIT</button>
-      <button type="button" onClick={deleteUser(userId)}>DELETE</button>
-      </div>
+
       </div>
 
       <CreateUser />
